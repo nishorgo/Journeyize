@@ -2,11 +2,8 @@ from django.conf import settings
 
 import requests
 import time
-from datetime import datetime, timedelta
+import datetime
 
-
-today_date = datetime.now()
-print(today_date + timedelta(days=10))
 
 def fetch_tourist_attractions(region_name):
     base_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
@@ -38,3 +35,51 @@ def fetch_tourist_attractions(region_name):
         time.sleep(2)
     
     return attractions
+
+
+def fetch_weather_info(region_name, start_date, end_date):
+    date = []
+    avgtemp = []
+    avg_humidity = []
+    rain_probability = []
+    snow_probability = []
+    sunrise = []
+    sunset = []
+    
+    start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
+    end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    start_date_difference = (start_date - datetime.date.today()).days
+    end_date_difference = (end_date - datetime.date.today()).days
+    end_date_difference += 1
+    
+    api_url = "https://api.weatherapi.com/v1/forecast.json"
+    params = {
+        "key": settings.WEATHER_API_KEY,
+        "q": region_name,
+        "days": 10,
+        "aqi": "no",
+        "alerts": "yes"
+    }
+    response = requests.get(api_url, params=params)
+
+    if response.status_code == 200:
+        weather_data = response.json()
+        daily_forecast = weather_data['forecast']['forecastday']
+        for forecast in daily_forecast:
+            date.append(forecast['date'])
+            avgtemp.append(forecast['day']['avgtemp_c'])
+            avg_humidity.append(forecast['day']['avghumidity'])
+            rain_probability.append(forecast['day']['daily_chance_of_rain'])
+            snow_probability.append(forecast['day']['daily_chance_of_snow'])
+            sunrise.append(forecast['astro']['sunrise'])
+            sunset.append(forecast['astro']['sunset'])
+
+        return date[start_date_difference:end_date_difference], avgtemp[start_date_difference:end_date_difference], \
+                avg_humidity[start_date_difference:end_date_difference], rain_probability[start_date_difference:end_date_difference], \
+                snow_probability[start_date_difference:end_date_difference], sunrise[start_date_difference:end_date_difference], \
+                sunset[start_date_difference:end_date_difference]
+        
+    else:
+        return response.status_code
+    
