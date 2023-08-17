@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Step 3: Select Foods</title>
+</head>
+<body>
+    <h1>Step 3: Select Foods</h1>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="region_name" value="{{ form.region_name.value }}">
+        <input type="hidden" name="selected_places" value="{{ form.selected_places.value }}">
+        <fieldset>
+            <legend>Select Places:</legend>
+            {{ form.selected_foods }}
+        </fieldset>
+        <button type="submit">Next</button>
+    </form>
+
+</body>
+</html>
