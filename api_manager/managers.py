@@ -1,8 +1,11 @@
 from django.conf import settings
 
+import re
 import requests
 import time
 import datetime
+
+import openai
 
 
 def fetch_tourist_attractions(region_name):
@@ -83,3 +86,35 @@ def fetch_weather_info(region_name, start_date, end_date):
     else:
         return response.status_code
     
+
+def generate_traditional_foods(region_name):
+    openai.api_key = settings.OPENAI_API_KEY
+    
+    prompt = (
+        "You are a food and ethnicity expert. I am giving you a region name. You'll tell me about all the traditional and ethnic foods of that region.\n\n" 
+
+        "Step 1: Generate a numbered list of all the traditional and ethnic foods from that region.\n"
+        "Step 2: Give a brief about each of the foods.\n\n"
+        
+        f"Region name: {region_name}"
+    )
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=3000
+    )
+
+    foods = response.choices[0].text.strip()
+
+    pattern = r'(\d+)\. ([^:]+): (.+)'
+    matches = re.findall(pattern, foods)
+
+    food_dictionary = {}
+
+    for match in matches:
+        name = match[1]
+        description = match[2]
+        food_dictionary[name] = description
+
+    return food_dictionary
