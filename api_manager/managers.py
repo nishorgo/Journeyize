@@ -118,3 +118,54 @@ def generate_traditional_foods(region_name):
         food_dictionary[name] = description
 
     return food_dictionary
+
+
+def generate_itinerary(destination, dates, places, duration, weather_info=None):
+    openai.api_key = settings.OPENAI_API_KEY
+
+    prompt_with_weather = (
+        "Suppose, you are a travel expert. Based on the places listed below, I'm seeking your expert assistance in curating a perfect itinerary for the following weather. "
+        "Suggest a range of activities in the places listed below that would align with this weather condition? Feel free to propose recreational activities, and local gems. "
+        "It would be immensely helpful if you could provide estimated durations for each activity, as well as any valuable tips or insights. I repeat, focus on the places listed below only.\n\n"
+
+        f"Destination = {destination}\n" 
+        f"places = {places}\n" 
+        f"dates = {dates}" 
+        f"temperature in celcius = {weather_info}" 
+        f"probability of rain in percentage= {weather_info}" 
+        f"probability of snow in percentage= {weather_info}" 
+        f"Duration of the tour: {duration} days\n\n"
+
+        "Follow the steps:"
+        "Step 1: Make lists of indoor, outdoor and recreational activities on those places." 
+        "Step 2: If the probability of rain or snow in percentage is more than 60, then prioritize on the indoor items while making the itinerary."
+        "Step 3: Output the itinerary activities formatted in separated by days."
+    )
+
+    prompt_without_weather = (
+        "Suppose, you are a travel expert. I'm seeking your expert assistance in curating a perfect itinerary for the places listed below. "
+        "Suggest a range of activities in the places listed below. Feel free to propose recreational activities, and local gems. "
+        "It would be immensely helpful if you could provide estimated durations for each activity, as well as any valuable tips or insights. I repeat, focus on the places listed below only.\n\n"
+
+        f"Destination = {destination}\n" 
+        f"places = {places}\n" 
+        f"dates = {dates}\n"
+        f"Duration of the tour: {duration} days\n\n"
+
+        "Follow the steps:"
+        "Step 1: Make lists of indoor, outdoor and recreational activities on those places." 
+        "Step 2: Output the itinerary activities formatted in separated by days."
+    )
+
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt_with_weather if weather_info else prompt_without_weather,
+        max_tokens=3000
+    )
+
+    itinerary_whole = response.choices[0].text.strip()
+    pattern = r'Day \d+:?'
+    itinerary_list = re.split(pattern, itinerary_whole)
+    itinerary_list = [itinerary.strip() for itinerary in itinerary_list if itinerary.strip()]
+
+    return itinerary_list
