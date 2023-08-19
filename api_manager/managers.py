@@ -120,7 +120,7 @@ def generate_traditional_foods(region_name):
     return food_dictionary
 
 
-def generate_itinerary(destination, dates, places, duration, weather_info=None):
+def generate_itinerary(region_name, selected_places, duration, weather_info):
     openai.api_key = settings.OPENAI_API_KEY
 
     prompt_with_weather = (
@@ -128,12 +128,13 @@ def generate_itinerary(destination, dates, places, duration, weather_info=None):
         "Suggest a range of activities in the places listed below that would align with this weather condition? Feel free to propose recreational activities, and local gems. "
         "It would be immensely helpful if you could provide estimated durations for each activity, as well as any valuable tips or insights. I repeat, focus on the places listed below only.\n\n"
 
-        f"Destination = {destination}\n" 
-        f"places = {places}\n" 
-        f"dates = {dates}" 
-        f"temperature in celcius = {weather_info}" 
-        f"probability of rain in percentage= {weather_info}" 
-        f"probability of snow in percentage= {weather_info}" 
+        f"Destination = {region_name}\n" 
+        f"places = {selected_places}\n" 
+        f"dates = {weather_info[0]}" 
+        f"temperature in celcius = {weather_info[1]}"
+        f"average humidity in percentage= {weather_info[2]}"
+        f"probability of rain in percentage= {weather_info[3]}" 
+        f"probability of snow in percentage= {weather_info[4]}" 
         f"Duration of the tour: {duration} days\n\n"
 
         "Follow the steps:"
@@ -147,9 +148,8 @@ def generate_itinerary(destination, dates, places, duration, weather_info=None):
         "Suggest a range of activities in the places listed below. Feel free to propose recreational activities, and local gems. "
         "It would be immensely helpful if you could provide estimated durations for each activity, as well as any valuable tips or insights. I repeat, focus on the places listed below only.\n\n"
 
-        f"Destination = {destination}\n" 
-        f"places = {places}\n" 
-        f"dates = {dates}\n"
+        f"Destination = {region_name}\n" 
+        f"places = {selected_places}\n"
         f"Duration of the tour: {duration} days\n\n"
 
         "Follow the steps:"

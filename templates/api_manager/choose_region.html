@@ -11,4 +11,18 @@
         <button type="submit">Next</button>
     </form>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const startDateInput = document.getElementById('start-date');
+        const endDateInput = document.getElementById('end-date');
+        const form = document.getElementById('my-form');
+        
+        startDateInput.addEventListener('input', function () {
+            endDateInput.min = startDateInput.value;
+        });
+        
+    });
+</script>
+
 </html>
