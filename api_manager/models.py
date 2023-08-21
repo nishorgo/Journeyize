@@ -4,8 +4,9 @@ from django.contrib.auth.models import User
 
 
 class Itinerary(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=250, unique=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    destination = models.CharField(max_length=100, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def generate_unique_name(self, base_name, user):
@@ -23,6 +24,9 @@ class Itinerary(models.Model):
     
     def __str__(self):
         return f"{self.name}"
+    
+    class Meta:
+        ordering = ['-created_at']
 
 
 class ItineraryEntry(models.Model):
@@ -37,6 +41,9 @@ class ItineraryEntry(models.Model):
     def __str__(self):
         return f"{self.date}"
     
+    class Meta:
+        ordering = ['date']
+    
 
 class FoodList(models.Model):
     name = models.CharField(max_length=200)
@@ -45,7 +52,3 @@ class FoodList(models.Model):
 
     def __str__(self):
         return f"{self.name}"
-
-
-
-

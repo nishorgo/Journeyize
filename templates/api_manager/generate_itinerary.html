@@ -9,8 +9,8 @@
     <form method="post" action="{% url 'create_itinerary' %}">
         {% csrf_token %}
 
-        <label for="itinerary_name">Itinerary Name:</label>
-        <input type="text" id="itinerary_name" name="itinerary_name", value="{{ region_name }}">
+        <label for="region_name">Itinerary Name:</label>
+        <input type="text" id="region_name" name="region_name", value="{{ region_name }}">
 
         <input type="hidden", name="is_weather_info", value="{{ is_weather_info }}">
         

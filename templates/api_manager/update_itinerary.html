@@ -1,3 +1,7 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
 <form method="post" action="{% url 'update_itinerary' itinerary.id %}">
     {% csrf_token %}
 
@@ -15,3 +19,5 @@
     
     <button type="submit">Save Entries</button>
 </form> 
+
+{% endblock content %}

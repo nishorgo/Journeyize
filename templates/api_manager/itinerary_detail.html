@@ -1,3 +1,10 @@
+{% extends '_base.html' %}
+
+{% block content %}
+
+<h1>{{ itinerary.name }}</h1>
+<h3>Destination: {{ itinerary.destination }}</h3>
+
 {% for entry in entries %}
     <p> Date: {{ entry.date }} </p>
     <p> Temp: {{ entry.avgtemp }} </p>
@@ -12,10 +19,14 @@
     <p> Description: {{ food.description }}</p>
 {% endfor %}
 
+<a href="{% url 'update_itinerary' itinerary.id %}">Update</a>
+
 <form method="post" action="{% url 'delete_itinerary' itinerary.id %}">
     {% csrf_token %}
     <button type="button" id="delete-button">Delete</button>
 </form>
+
+
 
 <script>
 document.getElementById('delete-button').addEventListener('click', function() {
@@ -24,3 +35,5 @@ document.getElementById('delete-button').addEventListener('click', function() {
     }
 });
 </script>
+
+{% endblock content %}

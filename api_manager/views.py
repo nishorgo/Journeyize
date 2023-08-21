@@ -43,7 +43,7 @@ def choose_places(request):
 
 
 def generate_itinerary_view(request):
-    region_name = request.session.get('region_name', None)
+    region_name = request.session.pop('region_name', None)
     selected_places = request.session.pop('selected_places', None)
     start_date = request.session.pop('start_date', None)
     end_date = request.session.pop('end_date', None)
@@ -84,8 +84,6 @@ def generate_itinerary_view(request):
                 'is_weather_info': is_weather_info,
             }
 
-        
-
         return render(request, 'api_manager/generate_itinerary.html', context=context)
     
     elif region_name and start_date and end_date:
@@ -97,8 +95,8 @@ def generate_itinerary_view(request):
 
 def save_itinerary_entries(request):
     if request.method == 'POST':
-        itinerary_name = request.POST.get('itinerary_name')
-        itinerary = Itinerary.objects.create(name=itinerary_name, user=request.user)
+        region_name = request.POST.get('region_name')
+        itinerary = Itinerary.objects.create(name=region_name, user=request.user, destination=region_name)
 
         date_list = request.POST.getlist('date')
         activity_list = request.POST.getlist('activity')
@@ -136,19 +134,13 @@ def save_itinerary_entries(request):
 
 
 def create_food_list(request, itinerary_id):
-    region_name = request.session.pop('region_name', None)
+    itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
+    foods = generate_traditional_foods(itinerary.destination)
+    for food, description in foods.items():
+        food_list = FoodList(name=food, description=description, itinerary=itinerary)
+        food_list.save()
 
-    if region_name:
-        itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
-        foods = generate_traditional_foods(region_name)
-        for food, description in foods.items():
-            food_list = FoodList(name=food, description=description, itinerary=itinerary)
-            food_list.save()
-
-        return redirect('itinerary_detail', itinerary_id=itinerary.id)
-    
-    else:
-        return redirect('choose_region')
+    return redirect('itinerary_detail', itinerary_id=itinerary.id)
 
 
 def itinerary_detail(request, itinerary_id):
@@ -184,9 +176,9 @@ def delete_itinerary(request, itinerary_id):
 
     if request.method == 'POST':
         itinerary.delete()
-        return redirect('/')
+        return redirect('itinerary_list')
     
-    return render(request, 'delete_item.html', {'itinerary': itinerary})
+    return redirect('itinerary_detail', itinerary_id=itinerary.id)
 
 
 def itinerary_list(request):
