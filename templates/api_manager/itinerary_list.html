@@ -1,0 +1,9 @@
+
+<h1>All itineraries</h1>
+<ul>
+    {% for itinerary in itineraries %}
+        <li><a href="{% url 'itinerary_detail' itinerary.id %}">{{ itinerary.name }}</a></li>
+    {% empty %}
+        <li>No items available.</li>
+    {% endfor %}
+</ul>

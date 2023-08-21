@@ -134,6 +134,7 @@ def save_itinerary_entries(request):
     
     return render(request, 'api_manager/generate_itinerary.html')
 
+
 def create_food_list(request, itinerary_id):
     region_name = request.session.pop('region_name', None)
 
@@ -172,9 +173,22 @@ def update_itinerary(request, itinerary_id):
             entry = get_object_or_404(ItineraryEntry, pk=entries_id[i])
             entry.activity = updated_activities[i]
             entry.save()
-            
+
         return redirect('itinerary_detail', itinerary_id=itinerary.id)
 
     return render(request, 'api_manager/update_itinerary.html', {'itinerary': itinerary, 'entries': entries})
 
 
+def delete_itinerary(request, itinerary_id):
+    itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
+
+    if request.method == 'POST':
+        itinerary.delete()
+        return redirect('/')
+    
+    return render(request, 'delete_item.html', {'itinerary': itinerary})
+
+
+def itinerary_list(request):
+    itineraries = Itinerary.objects.filter(user=request.user)
+    return render(request, 'api_manager/itinerary_list.html', {'itineraries': itineraries})

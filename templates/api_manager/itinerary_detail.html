@@ -11,3 +11,16 @@
     <p> Name: {{ food.name }}</p>
     <p> Description: {{ food.description }}</p>
 {% endfor %}
+
+<form method="post" action="{% url 'delete_itinerary' itinerary.id %}">
+    {% csrf_token %}
+    <button type="button" id="delete-button">Delete</button>
+</form>
+
+<script>
+document.getElementById('delete-button').addEventListener('click', function() {
+    if (confirm("Are you sure you want to delete '{{ item.name }}'?")) {
+        document.querySelector('form').submit();
+    }
+});
+</script>
