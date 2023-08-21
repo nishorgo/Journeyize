@@ -17,7 +17,7 @@ class Itinerary(models.Model):
         return new_name
 
     def save(self, *args, **kwargs):
-        if Itinerary.objects.filter(name=self.name, user=self.user).exists():
+        if self._state.adding:
             self.name = self.generate_unique_name(self.name, self.user)
         super(Itinerary, self).save(*args, **kwargs)
     

@@ -157,3 +157,24 @@ def itinerary_detail(request, itinerary_id):
     return render(request, 'api_manager/itinerary_detail.html', {'itinerary': itinerary, 'entries': entries, 'foods': foods})
 
 
+def update_itinerary(request, itinerary_id):
+    itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
+    entries = itinerary.itinerary_entries.all()
+
+    if request.method == 'POST':
+        itinerary_name = request.POST.get('itinerary_name')
+        itinerary.name = itinerary_name
+        itinerary.save()
+
+        updated_activities = request.POST.getlist('activity')
+        entries_id = request.POST.getlist('entry_id')
+        for i in range(len(entries_id)):
+            entry = get_object_or_404(ItineraryEntry, pk=entries_id[i])
+            entry.activity = updated_activities[i]
+            entry.save()
+            
+        return redirect('itinerary_detail', itinerary_id=itinerary.id)
+
+    return render(request, 'api_manager/update_itinerary.html', {'itinerary': itinerary, 'entries': entries})
+
+

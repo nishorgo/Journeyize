@@ -1,0 +1,17 @@
+<form method="post" action="{% url 'update_itinerary' itinerary.id %}">
+    {% csrf_token %}
+
+    <label for="itinerary_name">Itinerary Name:</label>
+    <input type="text" id="itinerary_name" name="itinerary_name", value="{{ itinerary.name }}">
+
+    {% for entry in entries %}
+
+        <label for="activity">Activity</label>
+        <input type="hidden" name="entry_id" value="{{ entry.id }}">
+        <textarea name="activity" cols="200", rows="6" id="activity" type="text"> {{ entry.activity }} </textarea>
+        
+        <hr>
+    {% endfor %}
+    
+    <button type="submit">Save Entries</button>
+</form> 
