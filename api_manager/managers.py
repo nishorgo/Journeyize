@@ -40,14 +40,12 @@ def fetch_tourist_attractions(region_name):
     return attractions
 
 
-def fetch_weather_info(region_name, start_date, end_date):
+def fetch_weather_information(region_name, start_date, end_date):
     date = []
     avgtemp = []
     avg_humidity = []
     rain_probability = []
     snow_probability = []
-    sunrise = []
-    sunset = []
     
     start_date = datetime.datetime.strptime(start_date, "%Y-%m-%d").date()
     end_date = datetime.datetime.strptime(end_date, "%Y-%m-%d").date()
@@ -75,13 +73,10 @@ def fetch_weather_info(region_name, start_date, end_date):
             avg_humidity.append(forecast['day']['avghumidity'])
             rain_probability.append(forecast['day']['daily_chance_of_rain'])
             snow_probability.append(forecast['day']['daily_chance_of_snow'])
-            sunrise.append(forecast['astro']['sunrise'])
-            sunset.append(forecast['astro']['sunset'])
 
         return date[start_date_difference:end_date_difference], avgtemp[start_date_difference:end_date_difference], \
                 avg_humidity[start_date_difference:end_date_difference], rain_probability[start_date_difference:end_date_difference], \
-                snow_probability[start_date_difference:end_date_difference], sunrise[start_date_difference:end_date_difference], \
-                sunset[start_date_difference:end_date_difference]
+                snow_probability[start_date_difference:end_date_difference]
         
     else:
         return response.status_code
@@ -120,7 +115,7 @@ def generate_traditional_foods(region_name):
     return food_dictionary
 
 
-def generate_itinerary(region_name, selected_places, duration, weather_info):
+def generate_itinerary(region_name, dates, selected_places, duration, avgtemp=None, avg_humidity=None, rain_probability=None, snow_probability=None):
     openai.api_key = settings.OPENAI_API_KEY
 
     prompt_with_weather = (
@@ -130,11 +125,11 @@ def generate_itinerary(region_name, selected_places, duration, weather_info):
 
         f"Destination = {region_name}\n" 
         f"places = {selected_places}\n" 
-        f"dates = {weather_info[0]}" 
-        f"temperature in celcius = {weather_info[1]}"
-        f"average humidity in percentage= {weather_info[2]}"
-        f"probability of rain in percentage= {weather_info[3]}" 
-        f"probability of snow in percentage= {weather_info[4]}" 
+        f"dates = {dates}" 
+        f"temperature in celcius = {avgtemp}"
+        f"average humidity in percentage= {avg_humidity}"
+        f"probability of rain in percentage= {rain_probability}" 
+        f"probability of snow in percentage= {snow_probability}" 
         f"Duration of the tour: {duration} days\n\n"
 
         "Follow the steps:"
@@ -159,7 +154,7 @@ def generate_itinerary(region_name, selected_places, duration, weather_info):
 
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=prompt_with_weather if weather_info else prompt_without_weather,
+        prompt=prompt_with_weather if avgtemp else prompt_without_weather,
         max_tokens=3000
     )
 

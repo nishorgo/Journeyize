@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Save Entries</title>
+</head>
+<body>
+
+
+    <form method="post" action="{% url 'create_itinerary' %}">
+        {% csrf_token %}
+
+        <label for="itinerary_name">Itinerary Name:</label>
+        <input type="text" id="itinerary_name" name="itinerary_name", value="{{ region_name }}">
+
+        <input type="hidden", name="is_weather_info", value="{{ is_weather_info }}">
+        
+        {% if is_weather_info %}
+            {% for avgtemp in avgtemp_list %}
+                <input type="hidden" name="avgtemp" value="{{ avgtemp }}">
+            {% endfor %}
+
+            {% for avg_humidity in avg_humidity_list %}
+                <input type="hidden" name="avg_humidity" value="{{ avg_humidity }}">
+            {% endfor %}
+
+            {% for rain_probability in rain_probability_list %}
+                <input type="hidden" name="rain_probability" value="{{ rain_probability }}">
+            {% endfor %}
+
+            {% for snow_probability in snow_probability_list %}
+                <input type="hidden" name="snow_probability" value="{{ snow_probability }}">
+            {% endfor %}
+        {% endif %}
+
+        {% for date in date_list %}
+            <input type="hidden" name="date" value="{{ date | date:'Y-m-d' }}">
+        {% endfor %}
+
+        {% for activity in itinerary %}
+
+            <label for="activity">Activity:</label>
+            <textarea name="activity" cols="200", rows="6" id="activity" type="text"> {{ activity }} </textarea>
+            
+            <hr>
+        {% endfor %}
+        
+        <button type="submit">Save Entries</button>
+    </form> 
+    
+</body>
+</html>

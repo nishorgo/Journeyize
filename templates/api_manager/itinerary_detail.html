@@ -1,0 +1,13 @@
+{% for entry in entries %}
+    <p> Date: {{ entry.date }} </p>
+    <p> Temp: {{ entry.avgtemp }} </p>
+    <p> Humdity: {{ entry.avg_humidity }} </p>
+    <p> Rain: {{ entry.rain_probability }} </p>
+    <p> Snow: {{ entry.snow_probability }} </p>
+    <p> Activity: {{ entry.activity }} </p>
+{% endfor %}
+
+{% for food in foods %}
+    <p> Name: {{ food.name }}</p>
+    <p> Description: {{ food.description }}</p>
+{% endfor %}
