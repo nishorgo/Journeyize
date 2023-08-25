@@ -2,8 +2,10 @@
   "scripts": {
     "dev": "tailwindcss -i static/css/tailwind-input.css -o static/css/tailwind-output.css --watch"
   },
-
   "devDependencies": {
     "tailwindcss": "^3.3.3"
+  },
+  "dependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2"
   }
 }

@@ -29,9 +29,9 @@ def choose_places(request):
 
     if region_name:
         places_list = fetch_tourist_attractions(region_name)
-        form = PlacesForm(initial={'region_name': region_name}, places_list=places_list)
+        form = PlacesForm(places_list=places_list)
         if request.method == 'POST':
-            form = PlacesForm(request.POST, initial={'region_name': region_name}, places_list=places_list)
+            form = PlacesForm(request.POST, places_list=places_list)
             if form.is_valid():
                 selected_places = form.cleaned_data['selected_places']
                 request.session['selected_places'] = selected_places
@@ -95,8 +95,9 @@ def generate_itinerary_view(request):
 
 def save_itinerary_entries(request):
     if request.method == 'POST':
-        region_name = request.POST.get('region_name')
-        itinerary = Itinerary.objects.create(name=region_name, user=request.user, destination=region_name)
+        name = request.POST.get('name')
+        destination = request.POST.get('destination')
+        itinerary = Itinerary.objects.create(name=name, user=request.user, destination=destination)
 
         date_list = request.POST.getlist('date')
         activity_list = request.POST.getlist('activity')
@@ -107,7 +108,6 @@ def save_itinerary_entries(request):
             avg_humidity_list = request.POST.getlist('avg_humidity')
             rain_probability_list = request.POST.getlist('rain_probability')
             snow_probability_list = request.POST.getlist('snow_probability')
-
             for i in range(len(date_list)):
                 entries = ItineraryEntry(
                     date=date_list[i],
@@ -119,6 +119,7 @@ def save_itinerary_entries(request):
                     itinerary=itinerary
                 )
                 entries.save()
+
         else:
             for i in range(len(date_list)):
                 entries = ItineraryEntry(

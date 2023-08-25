@@ -1,51 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Save Entries</title>
-</head>
-<body>
+{% extends '_base.html' %}
 
+{% block content %}
 
-    <form method="post" action="{% url 'create_itinerary' %}">
-        {% csrf_token %}
+<form method="post" action="{% url 'create_itinerary' %}" class="p-20 border border-dotted">
+    {% csrf_token %}
 
-        <label for="region_name">Itinerary Name:</label>
-        <input type="text" id="region_name" name="region_name", value="{{ region_name }}">
+    <label for="region_name" class="text-xl text-teal-600">Itinerary Name:</label>
+    <input type="text" id="region_name" name="name" class="mt-1 px-3 py-2 block w-full border rounded-md focus:ring focus:ring-teal-600 focus:outline-none", value="{{ region_name }}">
 
-        <input type="hidden", name="is_weather_info", value="{{ is_weather_info }}">
-        
-        {% if is_weather_info %}
-            {% for avgtemp in avgtemp_list %}
-                <input type="hidden" name="avgtemp" value="{{ avgtemp }}">
-            {% endfor %}
-
-            {% for avg_humidity in avg_humidity_list %}
-                <input type="hidden" name="avg_humidity" value="{{ avg_humidity }}">
-            {% endfor %}
-
-            {% for rain_probability in rain_probability_list %}
-                <input type="hidden" name="rain_probability" value="{{ rain_probability }}">
-            {% endfor %}
-
-            {% for snow_probability in snow_probability_list %}
-                <input type="hidden" name="snow_probability" value="{{ snow_probability }}">
-            {% endfor %}
-        {% endif %}
-
-        {% for date in date_list %}
-            <input type="hidden" name="date" value="{{ date | date:'Y-m-d' }}">
-        {% endfor %}
-
-        {% for activity in itinerary %}
-
-            <label for="activity">Activity:</label>
-            <textarea name="activity" cols="200", rows="6" id="activity" type="text"> {{ activity }} </textarea>
-            
-            <hr>
-        {% endfor %}
-        
-        <button type="submit">Save Entries</button>
-    </form> 
     
-</body>
-</html>
+    <input type="hidden", name="destination", value="{{ region_name }}">
+    <input type="hidden", name="is_weather_info", value="{{ is_weather_info }}">
+    
+    {% if is_weather_info %}
+        {% for avgtemp in avgtemp_list %}
+            <input type="hidden" name="avgtemp" value="{{ avgtemp }}">
+        {% endfor %}
+
+        {% for avg_humidity in avg_humidity_list %}
+            <input type="hidden" name="avg_humidity" value="{{ avg_humidity }}">
+        {% endfor %}
+
+        {% for rain_probability in rain_probability_list %}
+            <input type="hidden" name="rain_probability" value="{{ rain_probability }}">
+        {% endfor %}
+
+        {% for snow_probability in snow_probability_list %}
+            <input type="hidden" name="snow_probability" value="{{ snow_probability }}">
+        {% endfor %}
+    {% endif %}
+
+    {% for date in date_list %}
+        <input type="hidden" name="date" value="{{ date | date:'Y-m-d' }}">
+    {% endfor %}
+
+    {% for activity in itinerary %}
+
+        <label for="activity" class="text-xl text-teal-600">Activity:</label>
+        <textarea name="activity" cols="200", rows="6" id="activity" type="text" class="mt-4 px-3 py-2 block w-full border rounded-md focus:ring focus:ring-teal-600 focus:outline-none"> {{ activity }} </textarea>
+        
+        <hr>
+    {% endfor %}
+
+    <button type="submit" class="my-4 py-2 px-4 border-4 font-semibold border-teal-500 rounded-xl text-gray-500 hover:bg-teal-700 hover:text-white hover:border-teal-700 duration-300">Save Entries</button>
+                
+
+</form> 
+
+
+{% endblock content %}

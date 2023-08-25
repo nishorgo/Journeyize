@@ -1,3 +1,8 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 """
 Django settings for config project.
 
@@ -20,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r#-m9&5w*_6kdu(9b^5-y%+d3$gm1ui!ofw_t*ruevr6c9xvii'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
 ALLOWED_HOSTS = []
 
@@ -38,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'widget_tweaks',
     'api_manager',
+    'accounts',
     
 ]
 
@@ -86,9 +93,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get("DB_USER"),
+        'PASSWORD': os.environ.get("DB_PASSWORD"),
         'HOST': '127.0.0.1',
         'PORT': 5432
     }
@@ -132,14 +139,18 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
 STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-GOOGLE_MAPS_API_KEY = 'AIzaSyDdmvQqsyCWKjBmWk3srqxiwz0G8anG988'
+GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY")
 
-WEATHER_API_KEY = 'c46a13cb783949968e3105951231108'
+WEATHER_API_KEY = os.environ.get("WEATHER_API_KEY")
 
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+
+LOGIN_REDIRECT_URL = 'itinerary_list'
+LOGOUT_REDIRECT_URL = 'login'

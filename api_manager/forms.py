@@ -4,8 +4,8 @@ from datetime import date, timedelta
 
 class RegionForm(forms.Form):
     region_name = forms.CharField(label='City Name', max_length=100)
-    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'id': 'start-date', 'min': date.today(), 'placeholder': 'Select start date'}))
-    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'id': 'end-date', 'placeholder': 'Select end date'}))
+    start_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'id': 'start-date', 'min': date.today(), 'placeholder': 'Start Date'}))
+    end_date = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'id': 'end-date', 'placeholder': 'End Date'}))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -20,7 +20,6 @@ class RegionForm(forms.Form):
 
 
 class PlacesForm(forms.Form):
-    region_name = forms.CharField(widget=forms.HiddenInput())
     selected_places = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=[])
 
     def __init__(self, *args, **kwargs):
