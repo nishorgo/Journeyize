@@ -6,6 +6,14 @@ from django.contrib.auth import authenticate, login
 from .forms import RegistrationForm
 
 def user_login(request):
+    """
+    Handle user login functionality.
+    @param request - the HTTP request object
+    @return If the user is authenticated, redirect to the itinerary list page. Otherwise, if the request method is POST, 
+    attempt to authenticate the user with the provided username and password. If authentication is successful, 
+    log the user in and redirect to the itinerary list page. If authentication fails, display an error message. 
+    If the request method is not POST, render the login page.
+    """
     if request.user.is_authenticated:
         return redirect('itinerary_list')
 
@@ -24,6 +32,13 @@ def user_login(request):
         return render(request, 'accounts/login.html', context)
 
 def user_register(request):
+    """
+    Handle the user registration process.
+    @param request - the HTTP request object
+    @return If the user is already authenticated, redirect to the itinerary list page. 
+    Otherwise, if the request method is POST, validate the registration form and save the user's information. 
+    If the form is valid, redirect to the login page with a success message. If the request method is not POST, render the registration form.
+    """
     if request.user.is_authenticated:
         return redirect('itinerary_list')
     

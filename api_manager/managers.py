@@ -9,6 +9,11 @@ import openai
 
 
 def fetch_tourist_attractions(region_name):
+    """
+    Fetch tourist attractions in a specific region using the Google Places API.
+    @param region_name - the name of the region to search for attractions in
+    @return a list of tourist attractions in the region
+    """
     base_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
     attractions = []
     next_page_token = None
@@ -41,6 +46,13 @@ def fetch_tourist_attractions(region_name):
 
 
 def fetch_weather_information(region_name, start_date, end_date):
+    """
+    Fetch weather information for a specific region and date range.
+    @param region_name - the name of the region
+    @param start_date - the start date of the weather information (format: "YYYY-MM-DD")
+    @param end_date - the end date of the weather information (format: "YYYY-MM-DD")
+    @return a tuple containing lists of dates, average temperatures, average humidity, rain probability, and snow probability for the specified date range. If the API request fails, return the status code of the response.
+    """
     date = []
     avgtemp = []
     avg_humidity = []
@@ -83,6 +95,11 @@ def fetch_weather_information(region_name, start_date, end_date):
     
 
 def generate_traditional_foods(region_name):
+    """
+    Generate a dictionary of traditional and ethnic foods for a given region.
+    @param region_name - the name of the region
+    @return a dictionary where the keys are the names of the foods and the values are brief descriptions of each food
+    """
     openai.api_key = settings.OPENAI_API_KEY
     
     prompt = (
@@ -116,6 +133,18 @@ def generate_traditional_foods(region_name):
 
 
 def generate_itinerary(region_name, dates, selected_places, duration, avgtemp=None, avg_humidity=None, rain_probability=None, snow_probability=None):
+    """
+    Generate a travel itinerary based on the given parameters.
+    @param region_name - the name of the destination region
+    @param dates - the dates of the trip
+    @param selected_places - a list of selected places to visit
+    @param duration - the duration of the trip in days
+    @param avgtemp - (optional) the average temperature in Celsius
+    @param avg_humidity - (optional) the average humidity in percentage
+    @param rain_probability - (optional) the probability of rain in percentage
+    @param snow_probability - (optional) the probability of snow in percentage
+    @return A list of itinerary activities separated by days
+    """
     openai.api_key = settings.OPENAI_API_KEY
 
     prompt_with_weather = (

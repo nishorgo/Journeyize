@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .managers import fetch_tourist_attractions, generate_traditional_foods, generate_itinerary, fetch_weather_information
 from .forms import RegionForm, PlacesForm
 from .models import Itinerary, ItineraryEntry, FoodList
@@ -6,7 +7,16 @@ from .models import Itinerary, ItineraryEntry, FoodList
 from datetime import date, timedelta, datetime
 
 
+@login_required(login_url='login')
 def choose_region(request):
+    """
+    This function is used to choose a region for further processing. It requires the user to be logged in, otherwise it redirects to the login page.
+    If the request method is POST, it validates the form data and saves the region name, start date, and end date in the session. 
+    It then redirects to the 'choose_places' page.
+    If the request method is GET, it initializes an empty form and renders the 'choose_region.html' template with the form.
+    @param request - the HTTP request object
+    @return the rendered HTML template with the form
+    """
     if request.method == 'POST':
         form = RegionForm(request.POST)
         if form.is_valid():
@@ -24,7 +34,12 @@ def choose_region(request):
     return render(request, 'api_manager/choose_region.html', {'form': form})
 
 
+@login_required(login_url='login')
 def choose_places(request):
+    """
+    This view function is responsible for rendering a form to choose places for generating an itinerary. 
+    It requires the user to be logged in, otherwise it redirects to the login page.
+    """
     region_name = request.session.get('region_name')
 
     if region_name:
@@ -42,7 +57,13 @@ def choose_places(request):
     return render(request, 'api_manager/choose_places.html', {'form': form})
 
 
+@login_required(login_url='login')
 def generate_itinerary_view(request):
+    """
+    This view function generates an itinerary based on user inputs such as region name, selected places, start date, and end date. 
+    It also fetches weather information if the start date is within 10 days from today. 
+    The generated itinerary is then rendered in the 'generate_itinerary.html' template.
+    """
     region_name = request.session.pop('region_name', None)
     selected_places = request.session.pop('selected_places', None)
     start_date = request.session.pop('start_date', None)
@@ -93,7 +114,12 @@ def generate_itinerary_view(request):
         return redirect('choose_region')
 
 
+@login_required(login_url='login')
 def save_itinerary_entries(request):
+    """
+    This function is used to save itinerary entries in the web application. 
+    It requires the user to be logged in, otherwise it redirects to the login page.
+    """
     if request.method == 'POST':
         name = request.POST.get('name')
         destination = request.POST.get('destination')
@@ -135,6 +161,12 @@ def save_itinerary_entries(request):
 
 
 def create_food_list(request, itinerary_id):
+    """
+    Create a food list for a given itinerary by generating traditional foods based on the destination.
+    @param request - the HTTP request object
+    @param itinerary_id - the ID of the itinerary
+    @return a redirect to the itinerary detail page
+    """
     itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
     foods = generate_traditional_foods(itinerary.destination)
     for food, description in foods.items():
@@ -144,14 +176,28 @@ def create_food_list(request, itinerary_id):
     return redirect('itinerary_detail', itinerary_id=itinerary.id)
 
 
+@login_required(login_url='login')
 def itinerary_detail(request, itinerary_id):
+    """
+    Render the itinerary detail page with the specified itinerary and its associated entries and food list.
+    @param request - the HTTP request object
+    @param itinerary_id - the ID of the itinerary to display
+    @return the rendered HTML template with the itinerary, entries, and food list
+    """
     itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
     entries = itinerary.itinerary_entries.all()
     foods = itinerary.food_list.all()
     return render(request, 'api_manager/itinerary_detail.html', {'itinerary': itinerary, 'entries': entries, 'foods': foods})
 
 
+@login_required(login_url='login')
 def update_itinerary(request, itinerary_id):
+    """
+    Update the itinerary with the given itinerary ID.
+    @param request - the HTTP request object
+    @param itinerary_id - the ID of the itinerary to be updated
+    @return a redirect to the itinerary detail page
+    """
     itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
     entries = itinerary.itinerary_entries.all()
 
@@ -172,7 +218,15 @@ def update_itinerary(request, itinerary_id):
     return render(request, 'api_manager/update_itinerary.html', {'itinerary': itinerary, 'entries': entries})
 
 
+@login_required(login_url='login')
 def delete_itinerary(request, itinerary_id):
+    """
+    This function is used to delete an itinerary. It requires the user to be logged in, otherwise it will redirect to the login page.
+    @param request - the HTTP request object
+    @param itinerary_id - the ID of the itinerary to be deleted
+    @return If the request method is POST, the itinerary is deleted and the user is redirected to the itinerary list page. 
+    Otherwise, the user is redirected to the itinerary detail page.
+    """
     itinerary = get_object_or_404(Itinerary, pk=itinerary_id)
 
     if request.method == 'POST':
@@ -182,6 +236,12 @@ def delete_itinerary(request, itinerary_id):
     return redirect('itinerary_detail', itinerary_id=itinerary.id)
 
 
+@login_required(login_url='login')
 def itinerary_list(request):
+    """
+    This function is a view function that returns a list of itineraries for the logged-in user.
+    @param request - the HTTP request object
+    @return The rendered HTML template with the list of itineraries for the logged-in user.
+    """
     itineraries = Itinerary.objects.filter(user=request.user)
     return render(request, 'api_manager/itinerary_list.html', {'itineraries': itineraries})
