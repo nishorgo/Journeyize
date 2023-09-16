@@ -39,7 +39,7 @@ Follow these steps to get Journeyize up and running on your local machine:
 - openai
 - OpenWeather API Key (Get it [here](https://openweathermap.org/api))
 - Google Places API Key (Get it [here](https://cloud.google.com/maps-platform/places))
-- OpenAI API Key (For generative AI, get it [here](https://beta.openai.com/signup/))
+- OpenAI API Key (For generative AI, get it [here](hhttps://openai.com/product))
 
 ### Installation
 
